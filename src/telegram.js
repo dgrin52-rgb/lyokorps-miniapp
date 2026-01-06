@@ -11,6 +11,10 @@ export function initTelegram() {
   tg.ready();
   tg.expand();
 
+  // 🔥 ВАЖНО: делаем Telegram визуально нативным
+  tg.setHeaderColor?.('#000000');
+  tg.setBackgroundColor?.('#000000');
+
   console.log('Telegram Mini App инициализирован');
   console.log('initDataUnsafe:', tg.initDataUnsafe);
 }

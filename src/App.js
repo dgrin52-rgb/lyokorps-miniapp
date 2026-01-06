@@ -1,7 +1,7 @@
 // src/App.js
 
 import React, { useEffect } from 'react';
-import { HashRouter as Router, Routes, Route } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 
 import Navbar from './components/Navbar';
 import HomePage from './pages/HomePage';
@@ -21,11 +21,13 @@ function App() {
     <Router>
       <div
         style={{
-          minHeight: '100vh',
+          minHeight: '100dvh',
           background: '#000000',
           fontFamily: "'Segoe UI', Tahoma, Geneva, Verdana, sans-serif",
           position: 'relative',
           color: 'white',
+          paddingTop: 'env(safe-area-inset-top)',
+          paddingBottom: 'env(safe-area-inset-bottom)',
         }}
       >
         <Navbar />
@@ -35,6 +37,7 @@ function App() {
           <Route path="/pricelist" element={<PricelistPage />} />
           <Route path="/game" element={<GamePage />} />
           <Route path="/contacts" element={<ContactsPage />} />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
 
         <TelegramFloat />
