@@ -1,36 +1,94 @@
-/* src/index.css */
-:root{
-  --safe-top: env(safe-area-inset-top, 0px);
-  --safe-bottom: env(safe-area-inset-bottom, 0px);
+/* ===== Navbar responsive ===== */
+
+.navbar {
+  background: #0a0a0a;
+  padding: 12px 14px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  border-bottom: 2px solid #ff0000;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(255, 0, 0, 0.3);
 }
 
-*{ box-sizing: border-box; }
-
-html, body, #root{
-  height: 100%;
-  width: 100%;
-  margin: 0;
+.navbar__logo {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  text-decoration: none;
+  flex: 0 0 auto;
+  min-width: 0;
 }
 
-body{
-  background: #000;
-  color: #fff;
-  overflow-x: hidden;            /* убирает горизонтальный скролл */
-  -webkit-text-size-adjust: 100%; /* iOS не увеличивает шрифты сам */
-}
-
-/* Чтобы инпуты на iOS не зумились — держим минимум 16px */
-input, select, textarea, button{
+.navbar__logoText {
+  color: #ff0000;
   font-size: 16px;
+  font-weight: 900;
+  text-shadow: 0 0 5px rgba(255,0,0,0.7);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 46vw;
 }
 
-/* Картинки/видео не вылезают за экран */
-img, video, canvas, svg{
-  max-width: 100%;
-  height: auto;
+.navbar__links {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  align-items: center;
+  flex: 1 1 240px;
 }
 
-/* На всякий случай — длинные слова/почты */
-*{
-  overflow-wrap: anywhere;
+.navbar__link {
+  color: #fff;
+  text-decoration: none;
+  padding: 8px 12px;
+  border-radius: 12px;
+  transition: all 0.2s ease;
+  background: transparent;
+  border: 1px solid rgba(255,0,0,0.9);
+  font-weight: 800;
+  font-size: 13px;
+  line-height: 1;
+  white-space: nowrap;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
+}
+
+.navbar__link--active {
+  color: #000;
+  background: #ff0000;
+  border: 1px solid #ff0000;
+}
+
+/* Мобилка / TG */
+@media (max-width: 640px) {
+  .navbar {
+    padding: 12px 12px;
+  }
+
+  .navbar__logoText {
+    max-width: 55vw;
+    font-size: 15px;
+  }
+
+  .navbar__links {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .navbar__link {
+    width: 100%;
+    text-align: center;
+    padding: 10px 6px;
+    font-size: 12px;
+    border-radius: 12px;
+  }
 }
