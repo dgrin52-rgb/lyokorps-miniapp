@@ -1,33 +1,47 @@
 const fs = require('fs');
 const path = require('path');
 
+const IGNORE = new Set([
+  'node_modules',
+  '.git',
+  'build',
+  'dist',
+  '.next',
+  '.cache',
+]);
+
 function generateTree(dir, prefix = '') {
-  const files = fs.readdirSync(dir);
+  let entries;
+
+  try {
+    entries = fs.readdirSync(dir, { withFileTypes: true });
+  } catch (err) {
+    return [`${prefix}└── [no access]`];
+  }
+
+  // сортируем: папки → файлы
+  entries = entries
+    .filter(entry => !IGNORE.has(entry.name))
+    .sort((a, b) => {
+      if (a.isDirectory() && !b.isDirectory()) return -1;
+      if (!a.isDirectory() && b.isDirectory()) return 1;
+      return a.name.localeCompare(b.name);
+    });
+
   const tree = [];
-  
-  files.forEach((file, index) => {
-    const filePath = path.join(dir, file);
-    const isLast = index === files.length - 1;
-    const stats = fs.statSync(filePath);
-    const isDirectory = stats.isDirectory();
-    
-    // Пропускаем node_modules и другие ненужные папки
-    if (file === 'node_modules' || file === '.git' || file === 'build' || file === 'dist') {
-      return;
-    }
-    
+
+  entries.forEach((entry, index) => {
+    const isLast = index === entries.length - 1;
     const connector = isLast ? '└── ' : '├── ';
-    tree.push(`${prefix}${connector}${file}`);
-    
-    if (isDirectory) {
-      const extension = prefix + (isLast ? '    ' : '│   ');
-      tree.push(...generateTree(filePath, extension));
+    const entryPath = path.join(dir, entry.name);
+
+    tree.push(`${prefix}${connector}${entry.name}`);
+
+    if (entry.isDirectory()) {
+      const nextPrefix = prefix + (isLast ? '    ' : '│   ');
+      tree.push(...generateTree(entryPath, nextPrefix));
     }
   });
-  
+
   return tree;
 }
-
-console.log('.');
-const tree = generateTree('.');
-console.log(tree.join('\n'));
