@@ -2,8 +2,14 @@ import React, { useMemo, useState } from 'react';
 import { motion } from 'framer-motion';
 import { useNavigate } from 'react-router-dom';
 
+const ADMIN_ID = 7318342825; // твой Telegram user id
+
 const ContactsPage = () => {
   const navigate = useNavigate();
+
+  // определяем пользователя Telegram Mini App
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
+  const isAdmin = tgUser?.id === ADMIN_ID;
 
   const [formData, setFormData] = useState({
     name: '',
@@ -224,6 +230,22 @@ const ContactsPage = () => {
         cursor: 'pointer',
         width: '100%',
       }),
+      adminBtnWrap: {
+        maxWidth: '1100px',
+        margin: '0 auto 16px',
+      },
+      adminBtn: {
+        width: '100%',
+        background: 'linear-gradient(45deg, #ff00ff, #ff66ff)',
+        border: 'none',
+        borderRadius: '14px',
+        padding: '14px',
+        color: 'white',
+        fontSize: '16px',
+        fontWeight: 'bold',
+        cursor: 'pointer',
+        boxShadow: '0 0 20px rgba(255,0,255,0.35)',
+      },
     };
   }, []);
 
@@ -231,6 +253,7 @@ const ContactsPage = () => {
     setFormData((prev) => ({ ...prev, [key]: e.target.value }));
   };
 
+  // Это просто открывает твою личку с заранее заполненным текстом
   const goTelegram = (text) => {
     const url = `https://t.me/Lyokorps?text=${encodeURIComponent(text)}`;
     window.open(url, '_blank');
@@ -263,12 +286,13 @@ ${formData.message.trim()}
     });
   };
 
+  const openAdmin = () => {
+    // если открыто как Telegram Mini App, просто переходим на роут внутри приложения
+    navigate('/admin');
+  };
+
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      style={styles.page}
-    >
+    <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.page}>
       {/* Медиа-адаптация без “кривых” 2-колоночных полей на мобилках */}
       <style>{`
         @media (max-width: 900px) {
@@ -282,14 +306,28 @@ ${formData.message.trim()}
         select option { background: #120012; color: #ffffff; }
       `}</style>
 
+      {/* КНОПКА АДМИНКИ: видна только тебе */}
+      {isAdmin && (
+        <div style={styles.adminBtnWrap}>
+          <motion.button
+            type="button"
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            onClick={openAdmin}
+            style={styles.adminBtn}
+            title={`Admin: ${tgUser?.id || 'unknown'}`}
+          >
+            🛠 Открыть админку
+          </motion.button>
+        </div>
+      )}
+
       <div style={styles.wrapper}>
         <motion.h1 initial={{ y: -30 }} animate={{ y: 0 }} style={styles.title}>
           📞 КОНТАКТЫ
         </motion.h1>
 
-        <p style={styles.subtitle}>
-          Свяжитесь со мной — обсудим ваш проект, сроки и бюджет
-        </p>
+        <p style={styles.subtitle}>Свяжитесь со мной — обсудим ваш проект, сроки и бюджет</p>
 
         <div className="contacts-grid" style={styles.grid}>
           {/* Контактная информация */}
@@ -394,11 +432,7 @@ ${formData.message.trim()}
               />
 
               <div className="contacts-2col" style={styles.twoCol}>
-                <select
-                  value={formData.projectType}
-                  onChange={handleChange('projectType')}
-                  style={styles.select}
-                >
+                <select value={formData.projectType} onChange={handleChange('projectType')} style={styles.select}>
                   <option value="">Тип проекта</option>
                   <option value="chatbot">🤖 Чат-бот</option>
                   <option value="webinar">🎥 Вебинар/Автовебинар</option>
@@ -407,11 +441,7 @@ ${formData.message.trim()}
                   <option value="consult">🎯 Консультация</option>
                 </select>
 
-                <select
-                  value={formData.budget}
-                  onChange={handleChange('budget')}
-                  style={styles.select}
-                >
+                <select value={formData.budget} onChange={handleChange('budget')} style={styles.select}>
                   <option value="">Бюджет проекта</option>
                   <option value="<25k">До 25 000 ₽</option>
                   <option value="25-50k">25 000 – 50 000 ₽</option>
@@ -428,12 +458,7 @@ ${formData.message.trim()}
                 style={styles.textarea}
               />
 
-              <motion.button
-                type="submit"
-                whileHover={{ scale: 1.02 }}
-                whileTap={{ scale: 0.98 }}
-                style={styles.submit}
-              >
+              <motion.button type="submit" whileHover={{ scale: 1.02 }} whileTap={{ scale: 0.98 }} style={styles.submit}>
                 📤 Отправить заявку в Telegram
               </motion.button>
 
@@ -461,12 +486,7 @@ ${formData.message.trim()}
         </div>
 
         {/* Быстрые действия */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.35 }}
-          style={styles.quickCard}
-        >
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.35 }} style={styles.quickCard}>
           <h3 style={styles.quickTitle}>🚀 Быстрые действия</h3>
 
           <div className="contacts-quick" style={styles.quickGrid}>

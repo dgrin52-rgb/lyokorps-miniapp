@@ -9,6 +9,7 @@ import PricelistPage from './pages/PricelistPage';
 import GamePage from './pages/GamePage';
 import ContactsPage from './pages/ContactsPage';
 import TelegramFloat from './components/TelegramFloat';
+import AdminPage from "./pages/AdminPage";
 
 import { initTelegram } from './telegram';
 
@@ -38,6 +39,8 @@ function App() {
           <Route path="/game" element={<GamePage />} />
           <Route path="/contacts" element={<ContactsPage />} />
           <Route path="*" element={<Navigate to="/" replace />} />
+          <Route path="/admin" element={<AdminPage />} />
+
         </Routes>
 
         <TelegramFloat />
