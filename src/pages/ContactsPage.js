@@ -321,15 +321,15 @@ ${formData.message.trim()}
     onClick={() => navigate('/admin')}
     style={{
       width: '100%',
-      background: 'linear-gradient(45deg, #ff00ff, #ff66ff)',
+      background: 'linear-gradient(45deg, #d108d1ff, #ff66ff)',
       border: 'none',
-      borderRadius: 14,
-      padding: 14,
+      borderRadius: 20,
+      padding: 20,
       color: 'white',
-      fontSize: 16,
+      fontSize: 20,
       fontWeight: 'bold',
       cursor: 'pointer',
-      marginBottom: 16,
+      marginBottom: 20,
     }}
   >
     🛠 Открыть админку
@@ -348,22 +348,6 @@ ${formData.message.trim()}
         /* чтобы option не был чёрным на чёрном в некоторых браузерах */
         select option { background: #120012; color: #ffffff; }
       `}</style>
-
-      {/* КНОПКА АДМИНКИ: видна только тебе */}
-      {isAdmin && (
-        <div style={styles.adminBtnWrap}>
-          <motion.button
-            type="button"
-            whileHover={{ scale: 1.02 }}
-            whileTap={{ scale: 0.98 }}
-            onClick={openAdmin}
-            style={styles.adminBtn}
-            title={`Admin: ${tgUser?.id || 'unknown'}`}
-          >
-            🛠 Открыть админку
-          </motion.button>
-        </div>
-      )}
 
       <div style={styles.wrapper}>
         <motion.h1 initial={{ y: -30 }} animate={{ y: 0 }} style={styles.title}>
