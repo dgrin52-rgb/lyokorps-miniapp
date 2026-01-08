@@ -32,7 +32,7 @@ const Navbar = () => {
 
       <div className="navbar__links">
         <Link to="/" className={linkClass('/')}>Главная</Link>
-        <Link to="/pricelist" className={linkClass('/pricelist')}>Прайс-лист</Link>
+        <Link to="/pricelist" className={linkClass('/pricelist')}>Прайс</Link>
         <Link to="/game" className={linkClass('/game')}>Игра</Link>
         <Link to="/contacts" className={linkClass('/contacts')}>Контакты</Link>
       </div>
