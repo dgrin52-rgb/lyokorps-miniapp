@@ -6,10 +6,13 @@ const ADMIN_ID = 7318342825; // твой Telegram user id
 
 const ContactsPage = () => {
   const navigate = useNavigate();
+  
 
   // определяем пользователя Telegram Mini App
-  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user;
-  const isAdmin = tgUser?.id === ADMIN_ID;
+  const tg = window.Telegram?.WebApp;
+  const tgUser = tg?.initDataUnsafe?.user;
+  const isAdmin = Boolean(tg?.initData && tgUser?.id === ADMIN_ID);
+
 
   const [formData, setFormData] = useState({
     name: '',
@@ -293,6 +296,46 @@ ${formData.message.trim()}
 
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.page}>
+      {tg && (
+  <div
+    style={{
+      marginBottom: 12,
+      padding: 10,
+      borderRadius: 10,
+      background: 'rgba(0,0,0,0.4)',
+      fontSize: 12,
+      textAlign: 'center',
+    }}
+  >
+    <div>initData: {tg.initData ? 'есть' : 'нет'}</div>
+    <div>user: {tgUser ? 'есть' : 'нет'}</div>
+    <div>ID: {tgUser?.id ?? '—'}</div>
+    <div>isAdmin: {String(isAdmin)}</div>
+  </div>
+)}
+{isAdmin && (
+  <motion.button
+    type="button"
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={() => navigate('/admin')}
+    style={{
+      width: '100%',
+      background: 'linear-gradient(45deg, #ff00ff, #ff66ff)',
+      border: 'none',
+      borderRadius: 14,
+      padding: 14,
+      color: 'white',
+      fontSize: 16,
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      marginBottom: 16,
+    }}
+  >
+    🛠 Открыть админку
+  </motion.button>
+)}
+
       {/* Медиа-адаптация без “кривых” 2-колоночных полей на мобилках */}
       <style>{`
         @media (max-width: 900px) {
