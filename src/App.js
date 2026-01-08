@@ -34,14 +34,15 @@ function App() {
         <Navbar />
 
         <Routes>
-          <Route path="/" element={<HomePage />} />
-          <Route path="/pricelist" element={<PricelistPage />} />
-          <Route path="/game" element={<GamePage />} />
-          <Route path="/contacts" element={<ContactsPage />} />
-          <Route path="*" element={<Navigate to="/" replace />} />
-          <Route path="/admin" element={<AdminPage />} />
+  <Route path="/" element={<HomePage />} />
+  <Route path="/pricelist" element={<PricelistPage />} />
+  <Route path="/game" element={<GamePage />} />
+  <Route path="/contacts" element={<ContactsPage />} />
 
-        </Routes>
+
+  <Route path="*" element={<Navigate to="/" replace />} />
+</Routes>
+
 
         <TelegramFloat />
       </div>

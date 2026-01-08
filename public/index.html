@@ -4,40 +4,101 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="theme-color" content="#000000" />
-    <meta name="description" content="Технический специалист - Автовебинары, чат-боты, комплексные запуски" />
+    <meta
+      name="description"
+      content="Технический специалист - Автовебинары, чат-боты, комплексные запуски"
+    />
     <title>Lyokorps Tech | Тех-лид</title>
+
+    <!-- Telegram Mini App API -->
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+
     <style>
-      * {
+      *,
+      *::before,
+      *::after {
         margin: 0;
         padding: 0;
         box-sizing: border-box;
       }
+
+      html {
+        -webkit-text-size-adjust: 100%;
+      }
+
       body {
         font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         background: #000000;
         color: #ffffff;
         overflow-x: hidden;
+
+        line-height: 1.35;
+        font-size: clamp(14px, 1.6vw, 16px);
+        text-rendering: geometricPrecision;
       }
+
       #root {
         min-height: 100vh;
+        overflow-x: hidden;
       }
+
+      /* чтобы длинные слова/ссылки не ломали сетку */
+      p,
+      h1,
+      h2,
+      h3,
+      h4,
+      h5,
+      h6,
+      li,
+      a,
+      span,
+      div {
+        overflow-wrap: anywhere;
+        word-break: break-word;
+      }
+
+      /* картинки/видео не вылезают за контейнер */
+      img,
+      video,
+      canvas,
+      svg {
+        max-width: 100%;
+        height: auto;
+        display: block;
+      }
+
+      /* фикс для flex */
+      .navbar,
+      .navbar__logo,
+      .navbar__logoText,
+      .navbar__links {
+        min-width: 0;
+      }
+
       ::-webkit-scrollbar {
         width: 10px;
       }
+
       ::-webkit-scrollbar-track {
         background: #1a1a1a;
       }
+
       ::-webkit-scrollbar-thumb {
         background: #ff0000;
         border-radius: 5px;
       }
+
       ::-webkit-scrollbar-thumb:hover {
         background: #cc0000;
       }
     </style>
   </head>
+
   <body>
-    <noscript>Для работы этого приложения требуется JavaScript. Пожалуйста, включите его.</noscript>
+    <noscript>Для работы приложения нужен JavaScript.</noscript>
+
+    <!-- 👇 ВОТ СЮДА МОНТИРУЕТСЯ REACT -->
     <div id="root"></div>
   </body>
 </html>

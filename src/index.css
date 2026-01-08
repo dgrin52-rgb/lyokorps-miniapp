@@ -1,4 +1,67 @@
-/* ===== Navbar responsive ===== */
+/* =========================
+   GLOBAL RESET
+========================= */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  min-height: 100%;
+  background: #000;
+  color: #fff;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+    Roboto, Inter, Arial, sans-serif;
+  overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -webkit-tap-highlight-color: transparent;
+}
+
+body {
+  overscroll-behavior: none;
+  touch-action: manipulation;
+}
+
+/* =========================
+   LINKS / BUTTONS
+========================= */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+button {
+  font-family: inherit;
+}
+
+/* =========================
+   SAFE AREA (iOS)
+========================= */
+@supports (padding: env(safe-area-inset-bottom)) {
+  body {
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+/* =========================
+   BASIC LAYOUT (optional)
+========================= */
+.container {
+  width: 100%;
+  max-width: 520px;
+  margin: 0 auto;
+  padding: 16px;
+}
+
+/* =========================================================
+   ===== Navbar responsive (твои классы, под твой JSX) =====
+========================================================= */
 
 .navbar {
   background: #0a0a0a;
@@ -28,7 +91,7 @@
   color: #ff0000;
   font-size: 16px;
   font-weight: 900;
-  text-shadow: 0 0 5px rgba(255,0,0,0.7);
+  text-shadow: 0 0 5px rgba(255, 0, 0, 0.7);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -51,7 +114,7 @@
   border-radius: 12px;
   transition: all 0.2s ease;
   background: transparent;
-  border: 1px solid rgba(255,0,0,0.9);
+  border: 1px solid rgba(255, 0, 0, 0.9);
   font-weight: 800;
   font-size: 13px;
   line-height: 1;
@@ -90,5 +153,29 @@
     padding: 10px 6px;
     font-size: 12px;
     border-radius: 12px;
+  }
+}
+
+/* =========================
+   OPTIONAL: TG ID DIAG PILL
+   (если оставляешь блок "Ваш TG ID")
+========================= */
+.navbar__tgid {
+  margin-left: auto;
+  padding: 6px 10px;
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 0, 0, 0.6);
+  color: #ff4444;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+@media (max-width: 640px) {
+  .navbar__tgid {
+    width: 100%;
+    margin-left: 0;
+    text-align: center;
   }
 }

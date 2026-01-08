@@ -10,7 +10,7 @@ const ContactsPage = () => {
 
   // определяем пользователя Telegram Mini App
   const tg = window.Telegram?.WebApp;
-  const tgUser = tg?.initDataUnsafe?.user;
+  const tgUser = window.Telegram?.WebApp?.initDataUnsafe?.user || null;
   const isAdmin = Boolean(tg?.initData && tgUser?.id === ADMIN_ID);
 
 
@@ -288,12 +288,6 @@ ${formData.message.trim()}
       message: '',
     });
   };
-
-  const openAdmin = () => {
-    // если открыто как Telegram Mini App, просто переходим на роут внутри приложения
-    navigate('/admin');
-  };
-
   return (
     <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} style={styles.page}>
       {tg && (
