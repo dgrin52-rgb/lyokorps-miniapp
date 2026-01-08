@@ -6,6 +6,10 @@ import { useNavigate } from 'react-router-dom';
 const HomePage = () => {
   const [activeService, setActiveService] = useState(null);
   const navigate = useNavigate();
+    const tg = window.Telegram?.WebApp;
+  const tgUser = tg?.initDataUnsafe?.user;
+  const isAdmin = tgUser?.id === 7318342825;
+
 
   const services = [
     {
@@ -113,7 +117,31 @@ const HomePage = () => {
 
         <span>ТЕХНИЧЕСКИЙ СПЕЦИАЛИСТ</span>
       </h1>
-
+      {isAdmin && (
+  <motion.button
+    type="button"
+    whileHover={{ scale: 1.02 }}
+    whileTap={{ scale: 0.98 }}
+    onClick={() => navigate('/admin')}
+    style={{
+      margin: '0 auto 18px',
+      display: 'block',
+      background: 'linear-gradient(45deg, #ff00ff, #ff66ff)',
+      border: 'none',
+      borderRadius: 14,
+      padding: '12px 16px',
+      fontWeight: 'bold',
+      cursor: 'pointer',
+      color: '#000',
+      fontSize: 14,
+      boxShadow: '0 0 20px rgba(255,0,255,0.35)',
+      minWidth: 240,
+    }}
+    title={`Admin: ${tgUser?.id ?? 'no-user'}`}
+  >
+    🛠 Админка
+  </motion.button>
+)}
       <p
         style={{
           fontSize: '18px',
