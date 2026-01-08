@@ -33,15 +33,18 @@ function App() {
       >
         <Navbar />
 
-        <Routes>
+       <Routes>
   <Route path="/" element={<HomePage />} />
   <Route path="/pricelist" element={<PricelistPage />} />
   <Route path="/game" element={<GamePage />} />
   <Route path="/contacts" element={<ContactsPage />} />
 
+  {/* ВАЖНО: /admin ДО "*" */}
+  <Route path="/admin" element={<AdminPage />} />
 
   <Route path="*" element={<Navigate to="/" replace />} />
 </Routes>
+
 
 
         <TelegramFloat />
