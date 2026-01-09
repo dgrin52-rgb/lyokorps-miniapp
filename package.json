@@ -1,28 +1,17 @@
 {
-  "name": "my-tech-app",
+  "name": "lyokorps-bot-api",
   "version": "1.0.0",
-  "proxy": "http://localhost:3001", 
   "private": true,
-  "dependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-scripts": "5.0.1",
-    "react-router-dom": "^6.20.0",
-    "framer-motion": "^10.16.4",
-    "react-confetti": "^6.1.0"
+  "main": "server.js",
+  "type": "commonjs",
+  "engines": {
+    "node": ">=18"
   },
-  
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "node server.js"
   },
-  "eslintConfig": {
-    "extends": ["react-app"]
-  },
-  "browserslist": {
-    "production": [">0.2%", "not dead", "not op_mini all"],
-    "development": ["last 1 chrome version", "last 1 firefox version", "last 1 safari version"]
+  "dependencies": {
+    "dotenv": "^17.2.3",
+    "express": "^5.2.1"
   }
 }

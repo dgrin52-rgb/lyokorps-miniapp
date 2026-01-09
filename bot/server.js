@@ -1,3 +1,4 @@
+// bot/server.js
 require("dotenv").config();
 const express = require("express");
 const crypto = require("crypto");
@@ -7,13 +8,14 @@ app.use(express.json());
 
 const BOT_TOKEN = process.env.BOT_TOKEN;
 const ADMIN_ID = process.env.ADMIN_ID ? Number(process.env.ADMIN_ID) : null;
+const PORT = process.env.PORT || 5000;
 
 if (!BOT_TOKEN) {
   console.error("❌ BOT_TOKEN missing in bot/.env");
   process.exit(1);
 }
 if (!ADMIN_ID) {
-  console.warn("⚠️ ADMIN_ID missing in bot/.env (admin will always fail)");
+  console.warn("⚠️ ADMIN_ID missing in bot/.env (admin check will be skipped)");
 }
 
 // --- Telegram initData validation (WebApp) ---
@@ -59,37 +61,87 @@ function getTgUserFromInitData(initData) {
   }
 }
 
-// CORS (если фронт и бэк на разных доменах)
+// --- CORS ---
+// Важно: Telegram WebView иногда не присылает Origin. Поэтому:
+// - если Origin нет → пропускаем
+// - если Origin есть → проверяем белый список
+const ALLOWED_ORIGINS = new Set([
+  "https://lyokorps.ru",
+  "https://www.lyokorps.ru",
+  "https://lyokorps-miniapp-sac.vercel.app",
+]);
+
 app.use((req, res, next) => {
-  res.setHeader("Access-Control-Allow-Origin", "*");
-  res.setHeader("Access-Control-Allow-Headers", "Content-Type, X-Telegram-Init-Data");
-  res.setHeader("Access-Control-Allow-Methods", "GET,POST,OPTIONS");
+  const origin = req.headers.origin;
+
+  if (!origin) {
+    // без Origin: часто Telegram WebView / некоторые запросы
+    res.setHeader("Access-Control-Allow-Origin", "*");
+  } else if (ALLOWED_ORIGINS.has(origin)) {
+    res.setHeader("Access-Control-Allow-Origin", origin);
+    res.setHeader("Vary", "Origin");
+  } else {
+    // если хочешь жёстче: можно блокировать. Сейчас просто не ставим заголовок.
+    // return res.status(403).json({ ok: false, error: "CORS blocked", origin });
+  }
+
+  res.setHeader(
+    "Access-Control-Allow-Headers",
+    "Content-Type, X-Telegram-Init-Data, Authorization"
+  );
+  res.setHeader(
+    "Access-Control-Allow-Methods",
+    "GET,POST,PUT,PATCH,DELETE,OPTIONS"
+  );
+
   if (req.method === "OPTIONS") return res.sendStatus(204);
   next();
 });
 
-// middleware auth
+// --- middleware auth ---
 function requireAdmin(req, res, next) {
   const initData = req.header("X-Telegram-Init-Data") || "";
   const check = validateInitData(initData, BOT_TOKEN);
-  if (!check.ok) return res.status(401).json({ ok: false, error: "initData invalid", reason: check.reason });
+  if (!check.ok) {
+    return res
+      .status(401)
+      .json({ ok: false, error: "initData invalid", reason: check.reason });
+  }
 
   const user = getTgUserFromInitData(initData);
-  if (!user?.id) return res.status(401).json({ ok: false, error: "no user in initData" });
+  if (!user?.id) {
+    return res.status(401).json({ ok: false, error: "no user in initData" });
+  }
 
   if (ADMIN_ID && user.id !== ADMIN_ID) {
-    return res.status(403).json({ ok: false, error: "not admin", user_id: user.id });
+    return res
+      .status(403)
+      .json({ ok: false, error: "not admin", user_id: user.id });
   }
 
   req.tgUser = user;
   next();
 }
 
-app.get("/api/admin/me", requireAdmin, (req, res) => {
-  res.json({ ok: true, admin: { id: req.tgUser.id, username: req.tgUser.username, first_name: req.tgUser.first_name } });
+// --- routes ---
+app.get("/health", (req, res) => res.json({ ok: true }));
+
+app.get("/", (req, res) => {
+  res.type("text").send("OK. Use /api/admin/*");
 });
 
-// заглушки, чтобы админка не падала
+app.get("/api/admin/me", requireAdmin, (req, res) => {
+  res.json({
+    ok: true,
+    admin: {
+      id: req.tgUser.id,
+      username: req.tgUser.username,
+      first_name: req.tgUser.first_name,
+    },
+  });
+});
+
+// заглушки, чтобы UI не падал
 app.get("/api/admin/clients", requireAdmin, (req, res) => {
   res.json({ ok: true, items: [] });
 });
@@ -103,23 +155,14 @@ app.post("/api/admin/broadcasts/:id/start", requireAdmin, (req, res) => {
 });
 
 app.get("/api/admin/broadcasts/:id/stats", requireAdmin, (req, res) => {
-  res.json({ ok: true, counts: [{ status: "queued", c: 0 }, { status: "sent", c: 0 }, { status: "fail", c: 0 }] });
-});
-
-const PORT = process.env.PORT || 5000;
-app.get("/health", (req, res) => {
-  res.json({ ok: true });
-});
-
-app.get("/", (req, res) => {
-  res.type("text").send("OK. Use /api/admin/*");
-});
-app.get("/health", (req, res) => {
-  res.json({ ok: true });
-});
-
-app.get("/", (req, res) => {
-  res.type("text").send("OK. Use /api/admin/*");
+  res.json({
+    ok: true,
+    counts: [
+      { status: "queued", c: 0 },
+      { status: "sent", c: 0 },
+      { status: "fail", c: 0 },
+    ],
+  });
 });
 
 app.listen(PORT, () => console.log(`✅ API server on http://localhost:${PORT}`));

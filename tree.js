@@ -45,3 +45,6 @@ function generateTree(dir, prefix = '') {
 
   return tree;
 }
+const result = generateTree(process.cwd());
+console.log(result.join('\n'));
+

@@ -1,0 +1,7 @@
+tunnel: <https://opposition-flashers-thin-change.trycloudflare.com>
+credentials-file: C:\Users\cubik\.cloudflared\<UUID_ТУННЕЛЯ>.json
+
+ingress:
+  - hostname: adminapi.<твой-домен>
+    service: http://localhost:3001
+  - service: http_status:404
