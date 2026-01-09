@@ -1,9 +1,8 @@
 {
-  "name": "lyokorps-bot-api",
+  "name": "lyokorps-bot",
   "version": "1.0.0",
   "private": true,
-  "main": "server.js",
-  "type": "commonjs",
+ 
   "engines": {
     "node": ">=18"
   },
@@ -11,7 +10,9 @@
     "start": "node server.js"
   },
   "dependencies": {
+    "better-sqlite3": "^12.5.0",
     "dotenv": "^17.2.3",
-    "express": "^5.2.1"
+    "express": "^5.2.1",
+    "telegraf": "^4.16.3"
   }
 }
