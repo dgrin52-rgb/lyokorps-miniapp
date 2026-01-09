@@ -1,0 +1,8 @@
+{
+  "url": "https://ваш-домен.com",
+  "name": "LYOKORPS TECH",
+  "iconUrl": "https://ваш-домен.com/icon.png",
+  "platform": "web",
+  "apiVersion": "v1",
+  "features": ["internal_navigation"]
+}

@@ -1,3 +1,4 @@
+// bot/adminApi.js
 const express = require('express');
 const bodyParser = require('body-parser');
 const { verifyTelegramInitData } = require('./verifyInitData');
@@ -23,6 +24,18 @@ function makeAdminApi({ db, BOT_TOKEN, ADMIN_ID }) {
   const app = express();
   app.use(bodyParser.json({ limit: '5mb' }));
 
+  // ✅ CORS для Mini App (Vercel домен -> trycloudflare домен)
+  app.use((req, res, next) => {
+    res.setHeader('Access-Control-Allow-Origin', '*');
+    res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,PATCH,DELETE,OPTIONS');
+    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, X-Telegram-Init-Data');
+    // если понадобится читать какие-то заголовки на фронте:
+    // res.setHeader('Access-Control-Expose-Headers', 'Content-Type');
+
+    if (req.method === 'OPTIONS') return res.sendStatus(204);
+    next();
+  });
+
   app.get('/api/admin/me', adminAuth({ BOT_TOKEN, ADMIN_ID }), (req, res) => {
     res.json({ ok: true, admin: req.adminUser });
   });
@@ -36,8 +49,14 @@ function makeAdminApi({ db, BOT_TOKEN, ADMIN_ID }) {
       where.push('(username LIKE ? OR first_name LIKE ? OR last_name LIKE ?)');
       args.push(`%${q}%`, `%${q}%`, `%${q}%`);
     }
-    if (source) { where.push('source = ?'); args.push(source); }
-    if (status) { where.push('status = ?'); args.push(status); }
+    if (source) {
+      where.push('source = ?');
+      args.push(source);
+    }
+    if (status) {
+      where.push('status = ?');
+      args.push(status);
+    }
 
     const sql = `
       SELECT tg_id, username, first_name, last_name, source, last_seen, status, notes
@@ -65,6 +84,7 @@ function makeAdminApi({ db, BOT_TOKEN, ADMIN_ID }) {
     if (typeof notes === 'string') {
       db.prepare(`UPDATE clients SET notes=? WHERE tg_id=?`).run(notes, tgId);
     }
+
     res.json({ ok: true });
   });
 
@@ -93,12 +113,15 @@ function makeAdminApi({ db, BOT_TOKEN, ADMIN_ID }) {
     const b = db.prepare(`SELECT * FROM broadcasts WHERE id=?`).get(id);
     if (!b) return res.status(404).json({ error: 'not_found' });
 
-    const segment = JSON.parse(b.segment_json);
+    const segment = JSON.parse(b.segment_json || '{}');
 
     const where = ['status = "active"'];
     const args = [];
 
-    if (segment.source) { where.push('source = ?'); args.push(segment.source); }
+    if (segment.source) {
+      where.push('source = ?');
+      args.push(segment.source);
+    }
     if (segment.lastSeenDays) {
       const ms = Number(segment.lastSeenDays) * 24 * 60 * 60 * 1000;
       where.push('last_seen >= ?');
@@ -111,8 +134,10 @@ function makeAdminApi({ db, BOT_TOKEN, ADMIN_ID }) {
       ORDER BY last_seen DESC
     `).all(...args);
 
-    const ins = db.prepare(`INSERT INTO broadcast_jobs (broadcast_id, tg_id, status) VALUES (?, ?, 'queued')`);
-    const trx = db.transaction(() => clients.forEach(c => ins.run(id, c.tg_id)));
+    const ins = db.prepare(
+      `INSERT INTO broadcast_jobs (broadcast_id, tg_id, status) VALUES (?, ?, 'queued')`
+    );
+    const trx = db.transaction(() => clients.forEach((c) => ins.run(id, c.tg_id)));
     trx();
 
     db.prepare(`UPDATE broadcasts SET status='running', started_at=? WHERE id=?`).run(Date.now(), id);
